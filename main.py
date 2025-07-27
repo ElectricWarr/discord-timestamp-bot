@@ -20,7 +20,7 @@ async def sync(ctx: commands.Context) -> None:
 
 @bot.tree.command(name="localtime", description="Whats that in local time")
 async def localtime(interaction: discord.Interaction, input_time: str, input_timezone: str) -> None:
-    TIMEZONES = {
+    timezones = {
         'GMT': timedelta(hours=0),
         'UTC': timedelta(hours=0),
         'CET': timedelta(hours=1),
@@ -33,7 +33,8 @@ async def localtime(interaction: discord.Interaction, input_time: str, input_tim
         'MDT': timedelta(hours=-6),
         'PDT': timedelta(hours=-7),
     }
-    time_in_utc = datetime.strptime(f'01-01-1970 {input_time}', "%d-%m-%Y %H:%M") + TIMEZONES.get(input_timezone.upper())
+    timezone = timezones.get(input_timezone.upper(), timedelta(hours=0))
+    time_in_utc = datetime.strptime(f'01-01-1970 {input_time}', "%d-%m-%Y %H:%M") + timezone
     unix_time = int((time_in_utc - datetime(1970, 1, 1)).total_seconds())
     await interaction.response.send_message(f'<t:{unix_time}:t>')
 
